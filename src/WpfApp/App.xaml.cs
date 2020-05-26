@@ -1,9 +1,12 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Serilog;
 using System;
-using System.IO;
 using System.Windows;
-using static WpfApp.Extensions.ConfigureServiceExtension;
+using WpfApp.Models;
+using WpfApp.ViewModels;
 
 namespace WpfApp
 {
@@ -12,28 +15,50 @@ namespace WpfApp
     /// </summary>
     public partial class App : Application
     {
-        public IServiceProvider ServiceProvider { get; private set; }
+        private readonly IHost _host;
 
-        public IConfiguration Configuration { get; private set; }
-
-
-        protected override void OnStartup(StartupEventArgs e)
+        public App()
         {
+            _host = new HostBuilder()
+                .ConfigureAppConfiguration((context, configurationBuilder) => {
+                    configurationBuilder.SetBasePath(context.HostingEnvironment.ContentRootPath);
+                    configurationBuilder.AddJsonFile("appsettings.json", optional: false);
+                })
+                .ConfigureServices((context, services) => {
 
-            var builder = new ConfigurationBuilder()
-             .SetBasePath(Directory.GetCurrentDirectory())
-             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+                    services.Configure<AppSettings>(context.Configuration);
 
-            Configuration = builder.Build();
+                    services.AddTransient<MainViewModel>();
 
-            var serviceCollection = new ServiceCollection();
+                    services.AddSingleton<MainWindow>();
+                })
+                .ConfigureLogging(logging => {
+                    var log = new LoggerConfiguration()
+                        .WriteTo.File("log.txt", rollingInterval: RollingInterval.Day)
+                        .CreateLogger();
 
-            ConfigureServices(serviceCollection);
+                    logging.ClearProviders();
+                    logging.AddSerilog(log);
 
-            ServiceProvider = serviceCollection.BuildServiceProvider();
+                })
 
-            var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
+                .Build();
+        }
+
+        private async void Application_Startup(object sender, StartupEventArgs e)
+        {
+            await _host.StartAsync();
+
+            var mainWindow = _host.Services.GetService<MainWindow>();
             mainWindow.Show();
+        }
+
+        private async void Application_Exit(object sender, ExitEventArgs e)
+        {
+            using (_host)
+            {
+                await _host.StopAsync(TimeSpan.FromSeconds(5));
+            }
         }
 
     }
