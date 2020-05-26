@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using System;
 using System.Windows;
+using WpfApp.Views;
 using static WpfApp.Extensions.ConfigureServiceExtension;
 
 namespace WpfApp
@@ -47,7 +48,7 @@ namespace WpfApp
         {
             await _host.StartAsync();
 
-            var mainWindow = _host.Services.GetService<MainWindow>();
+            var mainWindow = _host.Services.GetService<MainView>();
             mainWindow.Show();
         }
 

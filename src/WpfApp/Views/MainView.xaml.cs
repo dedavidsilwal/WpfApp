@@ -1,20 +1,19 @@
 ﻿using System.Windows;
 using WpfApp.ViewModels;
 
-namespace WpfApp
+namespace WpfApp.Views
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for MainView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainView : Window
     {
-        public MainWindow(MainViewModel viewModel)
+        public MainView(MainViewModel viewModel)
         {
-
             DataContext = viewModel;
 
             InitializeComponent();
-
         }
+
     }
 }
