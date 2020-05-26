@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Prism.Events;
+using WpfApp.ApiClients;
 using WpfApp.Models;
 using WpfApp.ViewModels;
 using WpfApp.Views;
@@ -16,6 +17,10 @@ namespace WpfApp.Extensions
 
             services.AddTransient<MainViewModel>();
 
+            services.AddTransient<LoggingHandler>();
+
+            services.AddHttpClient<AuthenticationClient>(options => options.BaseAddress = new System.Uri(""))
+                .AddHttpMessageHandler<LoggingHandler>();
 
             services.AddTransient<IEventAggregator, EventAggregator>();
             services.AddTransient(typeof(MainView));
