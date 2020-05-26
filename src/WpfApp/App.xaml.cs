@@ -5,8 +5,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using System;
 using System.Windows;
-using WpfApp.Models;
-using WpfApp.ViewModels;
+using static WpfApp.Extensions.ConfigureServiceExtension;
 
 namespace WpfApp
 {
@@ -25,20 +24,15 @@ namespace WpfApp
                     configurationBuilder.AddJsonFile("appsettings.json", optional: false);
                 })
                 .ConfigureServices((context, services) => {
-
-                    services.Configure<AppSettings>(context.Configuration);
-
-                    services.AddTransient<MainViewModel>();
-
-                    services.AddSingleton<MainWindow>();
+                    ConfigureServices(context.Configuration, services);
                 })
                 .ConfigureLogging(logging => {
                     //var logger = new LoggerConfiguration()
                     //    .WriteTo.File("log.txt", rollingInterval: RollingInterval.Day)
                     //    .CreateLogger();
 
-                    using var logger = new LoggerConfiguration()
-                            .WriteTo.Async(a => a.File("logs/myapp.log"))
+                    var logger = new LoggerConfiguration()
+                            .WriteTo.Async(a => a.File("logs/myapp.log", rollingInterval: RollingInterval.Day))
                             // Other logger configuration
                             .CreateLogger();
 
@@ -62,7 +56,7 @@ namespace WpfApp
             using (_host)
             {
                 Log.CloseAndFlush();
-                await _host.StopAsync(TimeSpan.FromSeconds(5));
+                await _host.StopAsync(TimeSpan.FromSeconds(2));
             }
         }
 
