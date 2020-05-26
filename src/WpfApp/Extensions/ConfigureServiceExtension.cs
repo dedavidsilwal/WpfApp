@@ -20,7 +20,7 @@ namespace WpfApp.Extensions
             services.AddTransient<LoggingHandler>();
 
             services.AddHttpClient<AuthenticationClient>(options => options.BaseAddress = new System.Uri(""))
-                .AddHttpMessageHandler<LoggingHandler>();
+                  .AddHttpMessageHandler<LoggingHandler>();
 
             services.AddTransient<IEventAggregator, EventAggregator>();
             services.AddTransient(typeof(MainView));

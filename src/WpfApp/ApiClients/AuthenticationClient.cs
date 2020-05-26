@@ -15,7 +15,7 @@ namespace WpfApp.ApiClients
         {
 
             var request = new HttpRequestMessage(HttpMethod.Get, "/");
-            var response = await _client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+            var response = await _client.SendAsync(request);
             response.EnsureSuccessStatusCode();
             return response;
         }

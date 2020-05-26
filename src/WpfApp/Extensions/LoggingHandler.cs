@@ -7,9 +7,9 @@ namespace WpfApp.Extensions
 {
     public class LoggingHandler : DelegatingHandler
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<LoggingHandler> _logger;
 
-        public LoggingHandler(ILogger logger)
+        public LoggingHandler(ILogger<LoggingHandler> logger)
         {
             _logger = logger;
         }

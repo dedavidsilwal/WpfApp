@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using WpfApp.ApiClients;
 using WpfApp.Models;
 
 namespace WpfApp.ViewModels
@@ -11,10 +12,12 @@ namespace WpfApp.ViewModels
 
         public MainViewModel(
             IOptions<AppSettings> options,
-            ILogger<MainViewModel> logger)
+            ILogger<MainViewModel> logger,
+            AuthenticationClient client)
         {
             Text = options.Value.Text;
             _logger = logger;
+
         }
 
         public string Text { get; set; }
