@@ -33,15 +33,19 @@ namespace WpfApp
                     services.AddSingleton<MainWindow>();
                 })
                 .ConfigureLogging(logging => {
-                    var log = new LoggerConfiguration()
-                        .WriteTo.File("log.txt", rollingInterval: RollingInterval.Day)
-                        .CreateLogger();
+                    //var logger = new LoggerConfiguration()
+                    //    .WriteTo.File("log.txt", rollingInterval: RollingInterval.Day)
+                    //    .CreateLogger();
+
+                    using var logger = new LoggerConfiguration()
+                            .WriteTo.Async(a => a.File("logs/myapp.log"))
+                            // Other logger configuration
+                            .CreateLogger();
 
                     logging.ClearProviders();
-                    logging.AddSerilog(log);
+                    logging.AddSerilog(logger);
 
                 })
-
                 .Build();
         }
 
@@ -57,6 +61,7 @@ namespace WpfApp
         {
             using (_host)
             {
+                Log.CloseAndFlush();
                 await _host.StopAsync(TimeSpan.FromSeconds(5));
             }
         }
