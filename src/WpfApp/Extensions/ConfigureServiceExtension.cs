@@ -11,6 +11,8 @@ namespace WpfApp.Extensions
         public static void ConfigureServices(IConfiguration configuration, IServiceCollection services)
         {
             services.Configure<AppSettings>(configuration);
+            
+            
             services.AddTransient<MainViewModel>();
 
 

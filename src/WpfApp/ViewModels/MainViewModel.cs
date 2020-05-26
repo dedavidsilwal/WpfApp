@@ -7,14 +7,14 @@ namespace WpfApp.ViewModels
 {
     public class MainViewModel
     {
-        public MainViewModel(IOptions<AppSettings> options, 
+        private readonly ILogger<MainViewModel> _logger;
+
+        public MainViewModel(
+            IOptions<AppSettings> options,
             ILogger<MainViewModel> logger)
         {
             Text = options.Value.Text;
-          
-
-            logger.LogError($"Text from settings: '{options.Value.Text}'");
-
+            _logger = logger;
         }
 
         public string Text { get; set; }
